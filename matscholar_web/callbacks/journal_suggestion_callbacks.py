@@ -13,7 +13,9 @@ from math import log
 clf = NERClassifier()
 abstract_processor = process.MatScholarProcess()
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://kyang:U7B9PNfcaYFppnjN@matstract-kve41.mongodb.net')
+
+#client = MongoClient('mongodb://localhost:27017/')
 train_database = client.matstract_db.entities_combined_train
 
 mapping_file = open('issn_to_journal_mapping', 'rb')
@@ -30,27 +32,28 @@ def bind(app):
         [State('similar-journal-textarea', 'value')]
     )
     def update_table(n_clicks, text):
-        r = Rester(endpoint="http://0.0.0.0:8080")
-
-        journals = r.get_journals(text)
-        print(journals)
+        #r = Rester(endpoint="http://0.0.0.0:8080")
+        r = Rester()
+        journals = r.get_journals(text) # [[[journal cosine]....] [[entities journal]....]]
+        #print(journals)
         #journals = make_prediction_cosine(text)
         return html.Table(
             # Header
-            [html.Tr([html.Th('Suggested Journals'), html.Th('Cosine Similarity')])] +
+            [html.Tr([html.Th('Suggested Journals'), html.Th('Cosine Similarity'), html.Th('Suggested Journals'), html.Th('Entities Score')])] +
             # Body
-            [html.Tr([html.Td(journals[0][0]), html.Td(journals[0][1])])] +
-            [html.Tr([html.Td(journals[1][0]), html.Td(journals[1][1])])] +
-            [html.Tr([html.Td(journals[2][0]), html.Td(journals[2][1])])] +
-            [html.Tr([html.Td(journals[3][0]), html.Td(journals[3][1])])] +
-            [html.Tr([html.Td(journals[4][0]), html.Td(journals[4][1])])] +
-            [html.Tr([html.Td(journals[5][0]), html.Td(journals[5][1])])] +
-            [html.Tr([html.Td(journals[6][0]), html.Td(journals[6][1])])] +
-            [html.Tr([html.Td(journals[7][0]), html.Td(journals[7][1])])] +
-            [html.Tr([html.Td(journals[8][0]), html.Td(journals[8][1])])] +
-            [html.Tr([html.Td(journals[9][0]), html.Td(journals[9][1])])]
+            [html.Tr([html.Td(journals[0][0][0]), html.Td(journals[0][0][1]), html.Td(journals[1][0][1]), html.Td(journals[1][0][0])])] +
+            [html.Tr([html.Td(journals[0][1][0]), html.Td(journals[0][1][1]), html.Td(journals[1][1][1]), html.Td(journals[1][1][0])])] +
+            [html.Tr([html.Td(journals[0][2][0]), html.Td(journals[0][2][1]), html.Td(journals[1][2][1]), html.Td(journals[1][2][0])])] +
+            [html.Tr([html.Td(journals[0][3][0]), html.Td(journals[0][3][1]), html.Td(journals[1][3][1]), html.Td(journals[1][3][0])])] +
+            [html.Tr([html.Td(journals[0][4][0]), html.Td(journals[0][4][1]), html.Td(journals[1][4][1]), html.Td(journals[1][4][0])])] +
+            [html.Tr([html.Td(journals[0][5][0]), html.Td(journals[0][5][1]), html.Td(journals[1][5][1]), html.Td(journals[1][5][0])])] +
+            [html.Tr([html.Td(journals[0][6][0]), html.Td(journals[0][6][1]), html.Td(journals[1][6][1]), html.Td(journals[1][6][0])])] +
+            [html.Tr([html.Td(journals[0][7][0]), html.Td(journals[0][7][1]), html.Td(journals[1][7][1]), html.Td(journals[1][7][0])])] +
+            [html.Tr([html.Td(journals[0][8][0]), html.Td(journals[0][8][1]), html.Td(journals[1][8][1]), html.Td(journals[1][8][0])])] +
+            [html.Tr([html.Td(journals[0][9][0]), html.Td(journals[0][9][1]), html.Td(journals[1][9][1]), html.Td(journals[1][9][0])])]
         )
 
+    '''
     @app.callback(
        Output('similar-journals-table-cosine', 'children'),
        [Input('similar-journal-button', 'n_clicks')],
@@ -173,5 +176,7 @@ def entities_prediction(abstract):
     top_10 = scores[:10]
 
     return top_10
+    
+    '''
 
 
